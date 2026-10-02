@@ -1,0 +1,39 @@
+{
+  "case_id": "01_minimum_valid_route",
+  "title": "最小合法路線：2 個地點",
+  "purpose": "觸碰 locations 最小限制 2，確認只有起點與 1 個配送點也能成功求解，並套用每站預設服務時間。",
+  "mock_matrix": {
+    "generator": "linear",
+    "travel_seconds_per_step": 300,
+    "distance_meters_per_step": 1200
+  },
+  "expected": {
+    "status": "SUCCESS",
+    "route_starts_with": 0,
+    "route_ends_with": 0
+  },
+  "payload": {
+    "google_maps_api_key": "mock-key",
+    "solver": "ortools",
+    "solver_timeout_seconds": 1,
+    "depot_index": 0,
+    "constraints": {
+      "allow_late_arrival": true,
+      "late_penalty_per_second": 1000
+    },
+    "locations": [
+      {
+        "id": 0,
+        "name": "國立勤益科技大學",
+        "address": "411030臺中市太平區坪林里中山路二段57號",
+        "time_window": ["00:00", "23:59"]
+      },
+      {
+        "id": 1,
+        "name": "客戶 A",
+        "address": "mock://minimum/customer-a",
+        "time_window": ["00:00", "23:59"]
+      }
+    ]
+  }
+}

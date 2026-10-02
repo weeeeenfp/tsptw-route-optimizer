@@ -1,0 +1,27 @@
+{
+  "case_id": "05_no_remaining_deliveries",
+  "title": "配送途中重排：沒有剩餘配送點",
+  "purpose": "模擬只剩司機目前位置，其餘站點都已完成，確認後端回 SUCCESS 並標記 no_remaining_deliveries。",
+  "mock_matrix": {
+    "generator": "linear",
+    "travel_seconds_per_step": 300,
+    "distance_meters_per_step": 1000
+  },
+  "expected": {
+    "status": "SUCCESS",
+    "route_starts_with": 1,
+    "no_remaining_deliveries": true
+  },
+  "payload": {
+    "google_maps_api_key": "mock-key",
+    "solver": "ortools",
+    "solver_timeout_seconds": 1,
+    "depot_index": 0,
+    "current_index": 1,
+    "completed_indices": [0],
+    "locations": [
+      { "id": 0, "name": "國立勤益科技大學", "address": "411030臺中市太平區坪林里中山路二段57號", "time_window": ["00:00", "23:59"], "status": "completed", "service_time_seconds": 0 },
+      { "id": 1, "name": "司機目前位置", "address": "mock://done/current", "time_window": ["00:00", "23:59"], "status": "in_progress" }
+    ]
+  }
+}

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogiOps · 智慧物流排程系統</title>
+  <link rel="stylesheet" href="style.css?v=20260814b" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════ -->
+<header>
+  <a class="brand" href="./" style="text-decoration:none;color:inherit" title="回介紹首頁">
+    <div class="brand-mark">📦</div>
+    <span class="brand-name">Logi<em>Ops</em></span>
+    <span class="brand-tag">v2.0</span>
+  </a>
+  <div class="hdr-r">
+    <span class="conn-controls admin-only">
+      <span class="api-lbl">API Base</span>
+      <input class="api-in" id="apiBase" type="text" value="http://127.0.0.1:8000" style="width:210px" title="後端 API Base（公開：https://tsptw.onrender.com；本機開發：http://127.0.0.1:8000）" />
+      <span class="api-lbl" style="margin-left:6px">Maps Key</span>
+      <input class="api-in" id="mapsKey" type="text" placeholder="AIza…（空＝用後端設定）" style="width:150px" />
+      <span class="api-lbl" style="margin-left:6px">逾時(秒)</span>
+      <input class="api-in" id="solverTimeout" type="number" value="5" min="1" max="300" style="width:54px" />
+    </span>
+    <div class="dot" id="dot" title="連線狀態"></div>
+    <button class="btn btn-ghost btn-sm" id="roleBtn" onclick="toggleRole()" title="切換 系統管理員 / 一般使用者">🛠 一般使用者</button>
+  </div>
+</header>
+
+<!-- ══ TABS ════════════════════════════════════════════════ -->
+<div class="tabs" role="tablist" aria-label="主要頁籤">
+  <button class="tab on" id="tab-upload"   role="tab" aria-selected="true"  aria-controls="view-upload"   onclick="sw('upload',this)">⬆ 訂單上傳</button>
+  <button class="tab"    id="tab-schedule" role="tab" aria-selected="false" aria-controls="view-schedule" onclick="sw('schedule',this)">📋 路線 &amp; 堆疊 <span class="bdg" id="bS">0</span></button>
+  <button class="tab"    id="tab-delivery" role="tab" aria-selected="false" aria-controls="view-delivery" onclick="sw('delivery',this)"><span id="dTabIco">🚚</span> <span id="dTabTxt">送貨管理</span> <span class="bdg" id="bD">0</span></button>
+  <button class="tab"    id="tab-history"  role="tab" aria-selected="false" aria-controls="view-history"  onclick="sw('history',this)">📚 歷史紀錄 <span class="bdg" id="bH">0</span></button>
+</div>
+
+<main>
+
+<!-- ── TAB: UPLOAD ────────────────────────────────────────── -->
+<div class="view on" id="view-upload" role="tabpanel" aria-labelledby="tab-upload">
+
+  <!-- 步驟提示：讓「先上傳、再設定、最後送出」的順序一眼可見 -->
+  <ol class="steps" id="upSteps">
+    <li class="step on" id="step1"><span class="step-n">1</span>上傳訂單 Excel</li>
+    <li class="step" id="step2"><span class="step-n">2</span>確認排程設定</li>
+    <li class="step" id="step3"><span class="step-n">3</span>送出後端排程</li>
+  </ol>
+
+  <!-- 上傳（送貨 / 收貨 以按鈕切換，同一張卡片）：流程第一步，放最上面 -->
+  <div class="card mb22" id="uploadCard">
+    <div class="card-hdr">
+      <div class="seg" role="tablist" aria-label="上傳類型">
+        <button class="seg-btn on" id="upTabDeliver" onclick="setUploadTab('deliver')" role="tab" aria-selected="true">📦 送貨 Excel</button>
+        <button class="seg-btn" id="upTabReceive" onclick="setUploadTab('receive')" style="display:none" role="tab" aria-selected="false">📥 收貨 Excel<span class="seg-dot" id="recvDot" style="display:none">●</span></button>
+      </div>
+      <span class="sm mu mono" id="upTabHint">上傳送貨訂單 Excel，自動對應欄位、送後端排程</span>
+    </div>
+    <div class="card-body">
+      <!-- 送貨上傳 -->
+      <div id="upPanelDeliver">
+        <div class="drop" id="drop">
+          <input type="file" id="fi" accept=".xlsx,.xls,.csv" aria-label="選擇送貨 Excel 檔案" />
+          <div class="drop-ico">📊</div>
+          <div class="drop-ttl">拖放送貨 Excel 到這裡，或點擊選擇檔案</div>
+          <div class="drop-ht">.xlsx · .xls · .csv — 最大 10 MB</div>
+        </div>
+        <!-- 已載入時取代 dropzone，省掉整屏空白 -->
+        <div class="file-chip" id="fileChip" style="display:none">
+          <span class="file-chip-ico">📄</span>
+          <div class="file-chip-txt"><div class="file-chip-name" id="fileChipName">—</div><div class="file-chip-sub" id="fileChipSub">—</div></div>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('fi').click()">↻ 換一份</button>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="clearFile()">✕ 清除</button>
+        </div>
+        <div class="fl gap8 ic" style="margin-top:10px">
+          <span class="sm mu mono">沒有 Excel 或臨時追加訂單？</span>
+          <button class="btn btn-ghost btn-sm" onclick="openAddOrder()">➕ 手動新增訂單</button>
+        </div>
+        <div id="uploadHistory" class="up-history"></div>
+        <div id="upHint"><div class="alert alert-info">ℹ 上傳訂單 Excel；系統自動對應欄位、送後端 <span class="mono">POST /api/v1/optimize-route</span>，再呈現最佳路線。</div></div>
+      </div>
+      <!-- 收貨上傳（選填）-->
+      <div id="upPanelReceive" style="display:none">
+        <div class="drop" id="recvDrop">
+          <input type="file" id="recvFi" accept=".xlsx,.xls,.csv" aria-label="選擇收貨 Excel 檔案" />
+          <div class="drop-ico">📊</div>
+          <div class="drop-ttl">拖放收貨 Excel 到這裡，或點擊選擇檔案</div>
+          <div class="drop-ht">.xlsx · .xls · .csv — 最大 10 MB（選填）</div>
+        </div>
+        <div class="file-chip" id="recvFileChip" style="display:none">
+          <span class="file-chip-ico">📄</span>
+          <div class="file-chip-txt"><div class="file-chip-name" id="recvFileChipName">—</div><div class="file-chip-sub" id="recvFileChipSub">—</div></div>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('recvFi').click()">↻ 換一份</button>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="clearReceiveFile()">✕ 清除</button>
+        </div>
+        <div class="sm mu mono" style="margin-top:8px">選填：有收貨資料時，送貨完成後可在「配送管理」接續收貨行程。</div>
+        <div id="recvUploadHistory" class="up-history"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 常駐提示區：放在預覽區外，整檔被擋下（預覽不顯示）時錯誤原因仍看得到 -->
+  <div id="alertArea" class="mb14" aria-live="polite"></div>
+
+  <!-- 排程設定：出發時間與最終站合成一張卡，送出前一次確認 -->
+  <div class="card mb22" id="planSettingsCard">
+    <div class="card-hdr">
+      <span class="card-ttl">⚙ 排程設定</span>
+      <span class="sm mu mono">送出前確認這兩項；之後仍可回這裡調整重排</span>
+    </div>
+    <div class="card-body">
+      <div class="set-row">
+        <div class="set-lbl">
+          <label for="depTime">🕘 預計出發時間</label>
+          <span class="set-hint">車輛離開起點的時間，會寫入起點時間窗</span>
+        </div>
+        <div class="set-ctl"><input class="cms" id="depTime" type="time" value="09:00" style="max-width:150px" onchange="onDepartureChange()" /></div>
+      </div>
+      <div class="set-row">
+        <div class="set-lbl">
+          <span id="endCardLbl">🏁 <span id="endCardTtl">送貨</span>最終站（休息點）</span>
+          <span class="set-hint">送完貨後停留，若有收貨會作為收貨起點</span>
+        </div>
+        <div class="set-ctl">
+          <div class="fl gap8" style="flex-wrap:wrap">
+            <label class="end-opt"><input type="radio" name="endMode" value="depot" checked onchange="setEndMode('depot')" /> 回公司</label>
+            <label class="end-opt"><input type="radio" name="endMode" value="manual" onchange="setEndMode('manual')" /> 從送貨點挑選備選</label>
+            <label class="end-opt"><input type="radio" name="endMode" value="recommend" onchange="setEndMode('recommend')" /> 讓系統推薦</label>
+          </div>
+        </div>
+      </div>
+      <div id="manualEndWrap" style="display:none">
+        <div class="end-cand-hint" id="manualEndHint">請先上傳送貨資料，再勾選備選休息點</div>
+        <div class="end-cand-list" id="manualEndList"></div>
+      </div>
+      <div class="end-final" id="endFinalBox" style="display:none">
+        <div class="cmi"><div class="cml">系統選定的最終站 / 候選狀態</div><div class="cms-ro ok" id="endFinalName">—</div></div>
+        <div class="cmi"><div class="cml">地址</div><div class="cms-ro" id="endFinalAddr">—</div></div>
+      </div>
+      <div class="fl gap8 ic" id="endApplyBar" style="display:none;margin-top:10px">
+        <button class="btn btn-amb btn-sm" type="button" id="applyEndBtn" onclick="applyEndSelection()">✓ 套用終點設定</button>
+        <span class="sm mu mono" id="endApplyHint">終點設定已變更，按「套用」才會重新排程</span>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="upPreview" style="display:none">
+    <div class="sh mb14">
+      <div class="st">送貨資料預覽 <span class="ss" id="rowLbl">0 筆</span></div>
+      <div class="fl gap8 ic">
+        <button class="btn btn-ghost btn-sm" onclick="openAddOrder()">➕ 新增訂單</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearFile()">✕ 清除</button>
+      </div>
+    </div>
+    <div class="tw mb22"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
+    <div class="div"></div>
+    <div class="card admin-only">
+      <div class="card-hdr"><span class="card-ttl">欄位自動對應</span><span class="sm mu mono">系統依欄名自動對應，無需手動設定</span></div>
+      <div class="card-body"><div class="cmg" id="cmg"></div></div>
+    </div>
+  </div>
+
+  <!-- 收貨資料預覽（排在送貨預覽下方，不在上傳卡片內）-->
+  <div id="recvPreview" style="display:none">
+    <div class="sh mb14">
+      <div class="st">收貨資料預覽 <span class="ss" id="recvCount">0 筆</span> <span id="recvStatus" class="ss"></span></div>
+      <button class="btn btn-ghost btn-sm" onclick="clearReceiveFile()">✕ 清除收貨資料</button>
+    </div>
+    <div class="tw mb22"><table><thead id="recvTh"></thead><tbody id="recvTb"></tbody></table></div>
+    <div class="div"></div>
+    <div class="card admin-only">
+      <div class="card-hdr"><span class="card-ttl">收貨欄位自動對應</span><span class="sm mu mono">系統依欄名自動對應，無需手動設定</span></div>
+      <div class="card-body"><div class="cmg" id="recvCmg"></div></div>
+    </div>
+  </div>
+
+  <!-- 公司地點（admin） -->
+  <div class="card mb22 admin-only">
+    <div class="card-hdr">
+      <span class="card-ttl">🏢 公司地點</span>
+      <span class="sm mu mono">所有送貨與收貨排程固定以此作為公司/出發點</span>
+    </div>
+    <div class="card-body">
+      <div class="cmg2 mb10">
+        <div class="cmi"><div class="cml">公司名稱</div><input class="cms" id="companyName" type="text" value="國立勤益科技大學" onchange="onCompanyChange()" /></div>
+        <div class="cmi"><div class="cml">公司地址 <span class="cmr">*</span></div><input class="cms" id="companyAddress" type="text" value="411030臺中市太平區坪林里中山路二段57號" placeholder="請輸入 Google Maps 可辨識的公司地址" onchange="onCompanyChange()" /></div>
+      </div>
+      <div class="sm mu mono">送貨 Excel 只需放送貨點；id=0 仍可作為一般站點，只有地址與公司地點相同的舊公司列才會排除。</div>
+    </div>
+  </div>
+
+  <!-- 進階參數 (admin) -->
+  <div class="card mb22 admin-only">
+    <div class="card-hdr">
+      <span class="card-ttl">🔧 進階參數</span>
+      <span class="sm mu mono">留空＝沿用後端 config.json 預設值</span>
+    </div>
+    <div class="card-body">
+      <div class="cmg2 mb10">
+        <div class="cmi"><div class="cml">每站服務時間(秒) <span class="mono">service</span></div>
+          <input class="cms" id="advService" type="number" min="0" max="86400" placeholder="後端預設 600" /></div>
+        <div class="cmi"><div class="cml">等待成本/秒 <span class="mono">waiting_time_cost</span></div>
+          <input class="cms" id="advWaitCost" type="number" min="0" placeholder="後端預設 1" /></div>
+      </div>
+      <div class="cmg2 mb10">
+        <div class="cmi"><div class="cml">允許逾時 <span class="mono">allow_late_arrival</span></div>
+          <select class="cms" id="advLate"><option value="">後端預設</option><option value="true">允許</option><option value="false">不允許</option></select></div>
+        <div class="cmi"><div class="cml">維持剩餘順序 <span class="mono">preserve_remaining_order</span></div>
+          <select class="cms" id="advPreserve"><option value="">後端預設</option><option value="true">開</option><option value="false">關</option></select></div>
+      </div>
+      <div class="cmg2">
+        <div class="cmi"><div class="cml">首解策略 <span class="mono">first_solution_strategy</span></div>
+          <select class="cms" id="fsStrategy">
+            <option value="PATH_CHEAPEST_ARC" selected>PATH_CHEAPEST_ARC（預設）</option>
+            <option value="PARALLEL_CHEAPEST_INSERTION">PARALLEL_CHEAPEST_INSERTION</option>
+            <option value="LOCAL_CHEAPEST_INSERTION">LOCAL_CHEAPEST_INSERTION</option>
+            <option value="GLOBAL_CHEAPEST_ARC">GLOBAL_CHEAPEST_ARC</option>
+            <option value="AUTOMATIC">AUTOMATIC</option>
+          </select></div>
+        <div class="cmi"><div class="cml">區域搜尋 <span class="mono">local_search_metaheuristic</span></div>
+          <select class="cms" id="lsMeta">
+            <option value="GUIDED_LOCAL_SEARCH" selected>GUIDED_LOCAL_SEARCH（預設）</option>
+            <option value="GREEDY_DESCENT">GREEDY_DESCENT</option>
+            <option value="SIMULATED_ANNEALING">SIMULATED_ANNEALING</option>
+            <option value="TABU_SEARCH">TABU_SEARCH</option>
+            <option value="AUTOMATIC">AUTOMATIC</option>
+          </select></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 固定動作列：主要 CTA 不再藏在預覽表右上，捲到哪都按得到 -->
+  <div class="cta-bar" id="ctaBar" style="display:none">
+    <div class="cta-inner">
+      <div class="cta-sum" id="ctaSum">—</div>
+      <button class="btn btn-amb" id="sendBtn" onclick="runOptimize()">⚡ 送出後端排程</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TAB: SCHEDULE ──────────────────────────────────────── -->
+<div class="view" id="view-schedule" role="tabpanel" aria-labelledby="tab-schedule">
+  <div id="sEmpty" class="empty">
+    <div class="empty-card">
+      <div class="empty-ico">📋</div><div class="empty-ttl">尚無路線資料</div><div class="empty-sub">請先至「訂單上傳」送出資料</div>
+      <button class="btn btn-amb btn-sm" type="button" onclick="sw('upload', document.querySelector('.tabs .tab:nth-child(1)'))">前往訂單上傳</button>
+    </div>
+  </div>
+  <div id="sContent" style="display:none">
+    <div class="g4 mb22" id="statsRow"></div>
+    <div id="solverInfo" class="solver-info mb22 admin-only"></div>
+    <div class="g2">
+      <div>
+        <div class="sh mb14">
+          <div class="st">送貨路線順序</div>
+          <div class="fl gap8 ic">
+            <button class="btn btn-ghost btn-sm" id="editRouteBtn" onclick="toggleEditRoute()">✏️ 手動調整</button>
+            <button class="btn btn-ghost btn-sm" onclick="runOptimize()" title="交還後端重新計算最佳順序">↻ 重新最佳化</button>
+          </div>
+        </div>
+        <div id="routeTimeline"></div>
+      </div>
+      <div class="deliver-only">
+        <div class="sh mb14"><div class="st">貨物裝車順序</div></div>
+        <div class="stack-list" id="stackList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TAB: DELIVERY ──────────────────────────────────────── -->
+<div class="view" id="view-delivery" role="tabpanel" aria-labelledby="tab-delivery">
+  <div id="dEmpty" class="empty">
+    <div class="empty-card">
+      <div class="empty-ico">🚚</div><div class="empty-ttl">尚無送貨任務</div><div class="empty-sub">請先至「訂單上傳」送出資料</div>
+      <button class="btn btn-amb btn-sm" type="button" onclick="sw('upload', document.querySelector('.tabs .tab:nth-child(1)'))">前往訂單上傳</button>
+    </div>
+  </div>
+  <div id="dContent" style="display:none">
+    <div class="card mb18">
+      <div class="card-hdr"><span class="card-ttl">行程時間</span><span class="sm mu mono">目前時間為本地即時時鐘；預計出發時間請在「訂單上傳」修改</span></div>
+      <div class="card-body">
+        <div class="cmg2 mb10">
+          <div class="cmi"><div class="cml">目前時間（本地）</div><div class="cms-ro mono" id="driverClock">--:--</div></div>
+          <div class="cmi"><div class="cml">實際出發時間</div>
+            <div class="fl gap8">
+              <div class="cms-ro mono" id="departTimeText" style="flex:1">尚未出發</div>
+              <input class="cms" id="departTime" type="time" value="" style="display:none" title="管理員可指定出發時刻，按「出發」後鎖定" />
+              <button class="btn btn-pri btn-sm" type="button" id="departBtn" onclick="markDeparted()" title="按下代表司機已離開起點，實際出發時間就此記錄">🚚 出發</button>
+            </div>
+          </div>
+        </div>
+        <div class="cmi"><div class="cml">下一站預估</div><div class="next-info" id="driverNextInfo">尚無資料</div></div>
+        <div class="alert alert-ok" id="driverLastInfo" style="margin-top:12px">尚未標記送達</div>
+      </div>
+    </div>
+    <div class="nav-section" id="navSection"></div>
+    <div class="sh mb18">
+      <div class="st"><span id="dListTtl">送貨清單</span> <span class="ss" id="dProg">0 / 0</span></div>
+      <div class="fl gap8 ic">
+        <button class="btn btn-ghost btn-sm" onclick="openAddOrder()">➕ 新增訂單</button>
+      </div>
+    </div>
+    <div class="dlist" id="dList"></div>
+    <div id="completeDaySection" style="display:none;margin-top:18px"></div>
+    <div class="card mb18" id="receivePrepCard" style="display:none;margin-top:18px">
+      <div class="card-hdr"><span class="card-ttl">收貨準備</span><span class="sm mu mono" id="receivePrepStatus">送貨完成後可開始收貨</span></div>
+      <div class="card-body">
+        <div class="cmg2 mb10">
+          <div class="cmi"><div class="cml">收貨起點</div><div class="cms-ro ok" id="receiveRestName">—</div></div>
+          <div class="cmi"><div class="cml">地址</div><div class="cms-ro" id="receiveRestAddr">—</div></div>
+        </div>
+        <div class="g4 mb14">
+          <div class="stat"><div class="sl">建議最晚出發</div><div class="sv c" id="receiveLatestDepart">—</div><div class="su">收貨死線前 30 分鐘</div></div>
+          <div class="stat"><div class="sl">行駛 / 總耗時</div><div class="sv" id="receiveTravelElapsed">—</div><div class="su">行駛 · 含每站服務時間</div></div>
+          <div class="stat"><div class="sl">總里程</div><div class="sv g" id="receiveDistance">—</div><div class="su">公里</div></div>
+          <div class="stat"><div class="sl">收貨站點</div><div class="sv p" id="receiveStops">—</div><div class="su">個站點</div></div>
+        </div>
+        <button class="btn btn-amb" id="startReceivingBtn" onclick="startReceiving()" disabled>📥 開始收貨</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TAB: HISTORY ───────────────────────────────────────── -->
+<div class="view" id="view-history" role="tabpanel" aria-labelledby="tab-history">
+  <div id="hEmpty" class="empty">
+    <div class="empty-card">
+      <div class="empty-ico">📚</div><div class="empty-ttl">尚無配送紀錄</div>
+      <div class="empty-sub">完成一天的工作後，於「送貨/收貨管理」按「🏁 完成今日工作」即可在此查看與審閱歷史成果</div>
+    </div>
+  </div>
+  <div id="hContent" style="display:none">
+    <div class="sh mb18">
+      <div class="st">配送紀錄 <span class="ss" id="hCount">0 筆</span></div>
+      <div class="fl gap8 ic">
+        <button class="btn btn-ghost btn-sm" onclick="clearAllDayRecords()">🗑 清除全部</button>
+      </div>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+</div>
+
+</main>
+
+<div class="busy-overlay" id="busyOverlay"><div class="busy-box"><span class="spin"></span><span id="busyMsg">處理中…</span></div></div>
+
+<!-- ══ 今日工作完成 · 配送/收件總覽 ════════════════════════════ -->
+<div class="cd-modal" id="summaryModal">
+  <div class="cd-modal-box">
+    <button class="cd-modal-x" onclick="closeSummary()" title="關閉" aria-label="關閉">✕</button>
+    <div class="cd-modal-head"></div>
+    <div class="cd-modal-body"></div>
+    <div class="cd-modal-foot"></div>
+  </div>
+</div>
+
+<!-- ══ 新增訂單（手動輸入或丟檔案批次新增；途中新增會自動重排）═══════ -->
+<div class="cd-modal" id="addOrderModal">
+  <div class="cd-modal-box" style="max-width:560px">
+    <button class="cd-modal-x" onclick="closeAddOrder()" title="關閉" aria-label="關閉">✕</button>
+    <div class="cd-modal-head">
+      <div class="cd-modal-ttl">➕ 新增訂單</div>
+      <div class="cd-modal-sub" id="addOrderHint">填寫客戶名稱與地址即可；其餘欄位留空使用預設值</div>
+    </div>
+    <div class="cd-modal-body">
+      <div class="cmg2 mb10">
+        <div class="cmi"><div class="cml">客戶 / 地點名稱 <span class="cmr">*</span></div>
+          <input class="cms" id="aoName" type="text" placeholder="例如：客戶 甲" /></div>
+        <div class="cmi"><div class="cml">優先權（1 最優先 – 5）</div>
+          <select class="cms" id="aoPriority">
+            <option value="">預設（3）</option>
+            <option value="1">1（最優先）</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+          </select></div>
+      </div>
+      <div class="cmi mb10"><div class="cml">配送地址 <span class="cmr">*</span></div>
+        <input class="cms" id="aoAddress" type="text" placeholder="Google Maps 可辨識地址，例如：台中市太平區中山路二段348號" /></div>
+      <div class="cmg2 mb10">
+        <div class="cmi"><div class="cml">最早可抵達</div><input class="cms" id="aoTwStart" type="time" value="09:00" /></div>
+        <div class="cmi"><div class="cml">最晚可抵達</div><input class="cms" id="aoTwEnd" type="time" value="18:00" /></div>
+      </div>
+      <div class="cmi mb10"><div class="cml">服務時間（分鐘，留空＝預設 10 分）</div>
+        <input class="cms" id="aoService" type="number" min="0" max="1440" placeholder="10" style="max-width:160px" /></div>
+      <div class="sm mu mono" id="aoIdHint">訂單 ID 由系統自動編號</div>
+      <div class="cmi" style="border-top:1px dashed var(--bdr2);margin-top:12px;padding-top:12px">
+        <div class="cml">或丟檔案批次新增（Excel / CSV，欄位同送貨檔；名稱與地址必填，ID 由系統重新編號）</div>
+        <input type="file" id="aoFile" accept=".xlsx,.xls,.csv" style="display:none"
+               onchange="if(this.files[0]){readAppendXL(this.files[0]);this.value='';}" />
+        <button class="btn btn-ghost btn-sm" onclick="$('aoFile').click()">📄 選擇檔案批次新增</button>
+      </div>
+    </div>
+    <div class="cd-modal-foot">
+      <button class="btn btn-ghost btn-sm" onclick="closeAddOrder()">取消</button>
+      <button class="btn btn-grn btn-sm" id="aoSubmitBtn" onclick="submitAddOrder()">✓ 新增訂單</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts" role="status" aria-live="polite" aria-atomic="false"></div>
+
+<script src="cursor_glow.js?v=20260812a"></script>
+<script src="excel_validation.js?v=20260715a"></script>
+<script src="app.js?v=20260718a"></script>
+</body>
+</html>

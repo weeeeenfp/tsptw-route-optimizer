@@ -1,0 +1,52 @@
+{
+  "case_id": "02_maximum_25_locations",
+  "title": "最大合法路線：25 個地點",
+  "purpose": "觸碰 locations 上限 25，確認最大合法節點數仍可進入求解流程。",
+  "mock_matrix": {
+    "generator": "linear",
+    "travel_seconds_per_step": 60,
+    "distance_meters_per_step": 500
+  },
+  "expected": {
+    "status": "SUCCESS",
+    "route_starts_with": 0,
+    "route_ends_with": 0
+  },
+  "payload": {
+    "google_maps_api_key": "mock-key",
+    "solver": "ortools",
+    "solver_timeout_seconds": 1,
+    "depot_index": 0,
+    "constraints": {
+      "allow_late_arrival": true,
+      "late_penalty_per_second": 1000
+    },
+    "locations": [
+      { "id": 0, "name": "國立勤益科技大學", "address": "411030臺中市太平區坪林里中山路二段57號", "time_window": ["00:00", "23:59"], "service_time_seconds": 0 },
+      { "id": 1, "name": "站點 01", "address": "mock://max/01", "time_window": ["00:00", "23:59"] },
+      { "id": 2, "name": "站點 02", "address": "mock://max/02", "time_window": ["00:00", "23:59"] },
+      { "id": 3, "name": "站點 03", "address": "mock://max/03", "time_window": ["00:00", "23:59"] },
+      { "id": 4, "name": "站點 04", "address": "mock://max/04", "time_window": ["00:00", "23:59"] },
+      { "id": 5, "name": "站點 05", "address": "mock://max/05", "time_window": ["00:00", "23:59"] },
+      { "id": 6, "name": "站點 06", "address": "mock://max/06", "time_window": ["00:00", "23:59"] },
+      { "id": 7, "name": "站點 07", "address": "mock://max/07", "time_window": ["00:00", "23:59"] },
+      { "id": 8, "name": "站點 08", "address": "mock://max/08", "time_window": ["00:00", "23:59"] },
+      { "id": 9, "name": "站點 09", "address": "mock://max/09", "time_window": ["00:00", "23:59"] },
+      { "id": 10, "name": "站點 10", "address": "mock://max/10", "time_window": ["00:00", "23:59"] },
+      { "id": 11, "name": "站點 11", "address": "mock://max/11", "time_window": ["00:00", "23:59"] },
+      { "id": 12, "name": "站點 12", "address": "mock://max/12", "time_window": ["00:00", "23:59"] },
+      { "id": 13, "name": "站點 13", "address": "mock://max/13", "time_window": ["00:00", "23:59"] },
+      { "id": 14, "name": "站點 14", "address": "mock://max/14", "time_window": ["00:00", "23:59"] },
+      { "id": 15, "name": "站點 15", "address": "mock://max/15", "time_window": ["00:00", "23:59"] },
+      { "id": 16, "name": "站點 16", "address": "mock://max/16", "time_window": ["00:00", "23:59"] },
+      { "id": 17, "name": "站點 17", "address": "mock://max/17", "time_window": ["00:00", "23:59"] },
+      { "id": 18, "name": "站點 18", "address": "mock://max/18", "time_window": ["00:00", "23:59"] },
+      { "id": 19, "name": "站點 19", "address": "mock://max/19", "time_window": ["00:00", "23:59"] },
+      { "id": 20, "name": "站點 20", "address": "mock://max/20", "time_window": ["00:00", "23:59"] },
+      { "id": 21, "name": "站點 21", "address": "mock://max/21", "time_window": ["00:00", "23:59"] },
+      { "id": 22, "name": "站點 22", "address": "mock://max/22", "time_window": ["00:00", "23:59"] },
+      { "id": 23, "name": "站點 23", "address": "mock://max/23", "time_window": ["00:00", "23:59"] },
+      { "id": 24, "name": "站點 24", "address": "mock://max/24", "time_window": ["00:00", "23:59"] }
+    ]
+  }
+}

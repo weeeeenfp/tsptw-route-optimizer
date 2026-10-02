@@ -1,0 +1,37 @@
+{
+  "case_id": "04_in_transit_reoptimization",
+  "title": "配送途中重排：排除已完成與取消站點",
+  "purpose": "模擬司機已送完部分站點、途中客戶取消，確認後端從 current_index 重新計算剩餘路線並保留原始 index。",
+  "mock_matrix": {
+    "generator": "linear",
+    "travel_seconds_per_step": 240,
+    "distance_meters_per_step": 800
+  },
+  "expected": {
+    "status": "SUCCESS",
+    "route_starts_with": 2,
+    "route_ends_with": 2,
+    "route_excludes": [0, 1, 3]
+  },
+  "payload": {
+    "google_maps_api_key": "mock-key",
+    "solver": "ortools",
+    "solver_timeout_seconds": 1,
+    "depot_index": 0,
+    "current_index": 2,
+    "completed_indices": [0, 1],
+    "cancelled_indices": [3],
+    "constraints": {
+      "allow_late_arrival": true,
+      "late_penalty_per_second": 1000
+    },
+    "locations": [
+      { "id": 0, "name": "國立勤益科技大學", "address": "411030臺中市太平區坪林里中山路二段57號", "time_window": ["00:00", "23:59"], "status": "completed", "service_time_seconds": 0 },
+      { "id": 1, "name": "已完成客戶", "address": "mock://reroute/done", "time_window": ["00:00", "23:59"], "status": "completed" },
+      { "id": 2, "name": "司機目前位置", "address": "mock://reroute/current", "time_window": ["00:00", "23:59"], "status": "in_progress", "service_time_seconds": 0 },
+      { "id": 3, "name": "取消配送客戶", "address": "mock://reroute/cancelled", "time_window": ["00:00", "23:59"], "status": "cancelled" },
+      { "id": 4, "name": "剩餘客戶 A", "address": "mock://reroute/remaining-a", "time_window": ["00:00", "23:59"], "delay_until_seconds": "01:00" },
+      { "id": 5, "name": "剩餘客戶 B", "address": "mock://reroute/remaining-b", "time_window": ["00:00", "23:59"], "service_time_seconds": 900 }
+    ]
+  }
+}

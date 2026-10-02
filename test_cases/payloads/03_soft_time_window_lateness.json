@@ -1,0 +1,49 @@
+{
+  "case_id": "03_soft_time_window_lateness",
+  "title": "軟性時間窗：一定會延誤但仍需回傳最佳解",
+  "purpose": "刻意讓第一個客戶時間窗過短，確認 allow_late_arrival=true 時不會回傳無解，而會回傳總延誤。",
+  "mock_matrix": {
+    "generator": "linear",
+    "travel_seconds_per_step": 600,
+    "distance_meters_per_step": 1500
+  },
+  "expected": {
+    "status": "SUCCESS",
+    "route_starts_with": 0,
+    "route_ends_with": 0,
+    "min_total_lateness_minutes": 1
+  },
+  "payload": {
+    "google_maps_api_key": "mock-key",
+    "solver": "ortools",
+    "solver_timeout_seconds": 1,
+    "depot_index": 0,
+    "constraints": {
+      "allow_late_arrival": true,
+      "late_penalty_per_second": 1000
+    },
+    "locations": [
+      {
+        "id": 0,
+        "name": "國立勤益科技大學",
+        "address": "411030臺中市太平區坪林里中山路二段57號",
+        "time_window": ["00:00", "23:59"],
+        "service_time_seconds": 0
+      },
+      {
+        "id": 1,
+        "name": "超短時間窗客戶",
+        "address": "mock://late/customer-tight",
+        "time_window": ["00:00", "00:03"],
+        "service_time_seconds": 0
+      },
+      {
+        "id": 2,
+        "name": "一般客戶",
+        "address": "mock://late/customer-normal",
+        "time_window": ["00:00", "23:59"],
+        "service_time_seconds": 0
+      }
+    ]
+  }
+}

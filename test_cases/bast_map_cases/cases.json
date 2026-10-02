@@ -1,0 +1,118 @@
+[
+  {
+    "case_id": "bast_01_baseline",
+    "title": "原始 BAST 路線",
+    "purpose": "用 samples/request_payload_bast.json 原始資料建立基準路線，後續情境都與此路線對照。"
+  },
+  {
+    "case_id": "bast_02_customer_delay",
+    "title": "送到一半才發現客戶不在：延後後重排",
+    "purpose": "模擬司機已送完 index 1-5，抵達 index 6 才發現客戶不在；新增 index 11 作為目前位置，原 index 6 改約到新的時間窗 13:00-14:00 後仍要配送，最後仍回國立勤益科技大學。",
+    "append_locations": [
+      {
+        "id": 11,
+        "name": "司機目前位置：六扇門門口",
+        "copy_from_index": 6,
+        "status": "in_progress",
+        "service_time_seconds": 0
+      }
+    ],
+    "overrides": {
+      "current_index": 11,
+      "current_time_seconds": "11:00",
+      "completed_indices": [1, 2, 3, 4, 5]
+    },
+    "location_updates": {
+      "1": {
+        "status": "completed"
+      },
+      "2": {
+        "status": "completed"
+      },
+      "3": {
+        "status": "completed"
+      },
+      "4": {
+        "status": "completed"
+      },
+      "5": {
+        "status": "completed"
+      },
+      "6": {
+        "rescheduled_time_window": ["13:00", "14:00"],
+        "status": "delayed"
+      }
+    }
+  },
+  {
+    "case_id": "bast_03_priority_customer",
+    "title": "固定客戶優先配送",
+    "purpose": "模擬 index 10 的童話泡芙是固定重要客戶，設定最高優先權並提高優先權懲罰，觀察是否更早安排。",
+    "overrides": {
+      "priority": {
+        "default_priority": 3,
+        "priority_interval_seconds": 1800,
+        "priority_penalty_per_second": 2000
+      }
+    },
+    "location_updates": {
+      "10": {
+        "priority": 1
+      }
+    }
+  },
+  {
+    "case_id": "bast_04_soft_time_window",
+    "title": "軟性時間窗：一定會延誤",
+    "purpose": "刻意把 index 5 的最晚送達時間縮到 09:05，確認特殊情況下不回傳無解，而是顯示延誤最少的路線。",
+    "overrides": {
+      "constraints": {
+        "allow_late_arrival": true,
+        "late_penalty_per_second": 1000
+      }
+    },
+    "location_updates": {
+      "5": {
+        "time_window": ["09:00", "09:05"]
+      }
+    }
+  },
+  {
+    "case_id": "bast_05_in_transit_reroute",
+    "title": "配送途中重排",
+    "purpose": "模擬司機目前在 index 7，index 2、6 已完成，index 4 取消配送，剩餘路線從目前位置重新計算，最後仍回國立勤益科技大學 index 0。",
+    "overrides": {
+      "current_index": 7,
+      "completed_indices": [2, 6],
+      "cancelled_indices": [4]
+    },
+    "location_updates": {
+      "2": {
+        "status": "completed"
+      },
+      "4": {
+        "status": "cancelled"
+      },
+      "6": {
+        "status": "completed"
+      },
+      "7": {
+        "status": "in_progress",
+        "service_time_seconds": 0
+      },
+      "9": {
+        "delay_until_seconds": "13:00"
+      }
+    }
+  },
+  {
+    "case_id": "bast_06_flexible_end",
+    "title": "不強制回原點：候選結束點",
+    "purpose": "模擬司機送完後可在附近店家休息，不強制回公司，讓系統從 index 8、9、10 中選擇結束點。",
+    "overrides": {
+      "start_index": 0,
+      "end_index": null,
+      "end_candidate_indices": [8, 9, 10]
+    }
+  }
+]

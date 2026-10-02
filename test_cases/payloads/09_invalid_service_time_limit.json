@@ -1,0 +1,21 @@
+{
+  "case_id": "09_invalid_service_time_limit",
+  "title": "服務時間限制：超過 86400 秒",
+  "purpose": "刻意讓 service.default_service_time_seconds 超過 24 小時，確認輸入驗證會擋下。",
+  "expected": {
+    "status": "ERROR"
+  },
+  "payload": {
+    "google_maps_api_key": "mock-key",
+    "solver": "ortools",
+    "solver_timeout_seconds": 1,
+    "depot_index": 0,
+    "service": {
+      "default_service_time_seconds": 86401
+    },
+    "locations": [
+      { "id": 0, "name": "國立勤益科技大學", "address": "411030臺中市太平區坪林里中山路二段57號", "time_window": ["00:00", "23:59"] },
+      { "id": 1, "name": "客戶 A", "address": "mock://service-limit/customer-a", "time_window": ["00:00", "23:59"] }
+    ]
+  }
+}

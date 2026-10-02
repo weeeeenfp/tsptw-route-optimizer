@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+debug_logs/
+# LibreOffice/Excel 暫存鎖定檔
+.~lock.*#
+# 本機私密設定（API 金鑰），不入版控
+config.local.json
+# Claude Code 的本機設定與暫時 worktree
+.claude/
+# 地址驗證 Geocoding 快取（執行時自動產生）
+geocode_validate_cache.json
+# 地圖模組 Geocoding 快取（執行時自動產生）
+geocode_cache.json
+# 測試工作簿產生器的本機套件連結
+node_modules/
+# 首頁地圖產生器的中繼產出（正本已注入 index.html 的 SAT:MAP 區塊）
+scripts/landing_map.generated.svg

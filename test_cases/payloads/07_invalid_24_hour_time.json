@@ -1,0 +1,18 @@
+{
+  "case_id": "07_invalid_24_hour_time",
+  "title": "非法時間格式：24:00",
+  "purpose": "確認時間只能使用合法 24 小時制，不能輸入 24:00 或超過 23:59:59。",
+  "expected": {
+    "status": "ERROR"
+  },
+  "payload": {
+    "google_maps_api_key": "mock-key",
+    "solver": "ortools",
+    "solver_timeout_seconds": 1,
+    "depot_index": 0,
+    "locations": [
+      { "id": 0, "name": "國立勤益科技大學", "address": "411030臺中市太平區坪林里中山路二段57號", "time_window": ["00:00", "23:59"] },
+      { "id": 1, "name": "時間錯誤客戶", "address": "mock://bad-time/customer", "time_window": ["24:00", "23:59"] }
+    ]
+  }
+}

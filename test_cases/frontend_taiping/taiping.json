@@ -1,0 +1,155 @@
+{
+  "company": {
+    "name": "國立勤益科技大學",
+    "address": "411030臺中市太平區坪林里中山路二段57號"
+  },
+  "headers": [
+    "ID",
+    "Name (名稱)",
+    "Address (地址)",
+    "Time Window Start",
+    "Time Window End"
+  ],
+  "rows": [
+    {
+      "ID": 0,
+      "Name (名稱)": "太平區公所",
+      "Address (地址)": "台中市太平區中平路144號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 1,
+      "Name (名稱)": "星巴克 台中太平門市",
+      "Address (地址)": "台中市太平區中山路四段26號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 2,
+      "Name (名稱)": "麥當勞 太平中山店",
+      "Address (地址)": "台中市太平區中山路四段25號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 3,
+      "Name (名稱)": "全聯福利中心 太平樹孝店",
+      "Address (地址)": "台中市太平區樹孝路115號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 4,
+      "Name (名稱)": "寶雅 太平樹德店",
+      "Address (地址)": "台中市太平區樹德路123號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 5,
+      "Name (名稱)": "肯德基 太平中山餐廳",
+      "Address (地址)": "台中市太平區中山路三段111號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 6,
+      "Name (名稱)": "50嵐 太平樹孝店",
+      "Address (地址)": "台中市太平區樹孝路67號",
+      "Time Window Start": "09:00",
+      "Time Window End": "13:00"
+    },
+    {
+      "ID": 7,
+      "Name (名稱)": "八方雲集 太平宜昌店",
+      "Address (地址)": "台中市太平區宜昌路222號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 8,
+      "Name (名稱)": "屈臣氏 太平門市",
+      "Address (地址)": "台中市太平區太平路333號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 9,
+      "Name (名稱)": "康是美 太平門市",
+      "Address (地址)": "台中市太平區中平路88號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 10,
+      "Name (名稱)": "爭鮮迴轉壽司 太平店",
+      "Address (地址)": "台中市太平區中山路四段50號",
+      "Time Window Start": "09:00",
+      "Time Window End": "13:00"
+    },
+    {
+      "ID": 11,
+      "Name (名稱)": "迷客夏 太平中山店",
+      "Address (地址)": "台中市太平區中山路三段200號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 12,
+      "Name (名稱)": "清心福全 太平樹德店",
+      "Address (地址)": "台中市太平區樹德路66號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 13,
+      "Name (名稱)": "路易莎咖啡 太平樹孝門市",
+      "Address (地址)": "台中市太平區樹孝路150號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 14,
+      "Name (名稱)": "拿坡里披薩 太平店",
+      "Address (地址)": "台中市太平區中山路四段100號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 15,
+      "Name (名稱)": "達美樂 台中太平店",
+      "Address (地址)": "台中市太平區東平路500號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 16,
+      "Name (名稱)": "胖老爹美式炸雞 太平店",
+      "Address (地址)": "台中市太平區長億路77號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 17,
+      "Name (名稱)": "孫東寶 台中太平店",
+      "Address (地址)": "台中市太平區中山路四段80號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 18,
+      "Name (名稱)": "築間幸福鍋物 太平店",
+      "Address (地址)": "台中市太平區中山路四段120號",
+      "Time Window Start": "09:00",
+      "Time Window End": "14:00"
+    },
+    {
+      "ID": 19,
+      "Name (名稱)": "三商巧福 太平店",
+      "Address (地址)": "台中市太平區中山路三段150號",
+      "Time Window Start": "09:00",
+      "Time Window End": "12:00"
+    }
+  ]
+}

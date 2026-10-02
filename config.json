@@ -1,0 +1,63 @@
+{
+  "_description": "路線最佳化專案的可調設定。JSON 不支援註解，所以說明文字放在 _description 與各區塊的 _description 欄位。API 金鑰請放在 config.local.json（已 gitignore，格式同本檔、只放要覆蓋的欄位）或環境變數（依序 ROUTING_API_KEY_0814、ROUTING_API_KEY、GOOGLE_MAPS_API_KEY，取第一個有值的），不要提交進版控。",
+  "input_payload_file": "samples/request_payload_bast.json",
+  "output_result_file": "outputs/routing_result_central.json",
+  "google_maps_api_key": "",
+  "solver": "ortools",
+  "solver_timeout_seconds": 5,
+  "depot_index": 0,
+  "start_index": null,
+  "end_index": null,
+  "end_candidate_indices": [],
+  "matrix_cache_file": "matrix_cache.json",
+  "cli_config_overrides_payload": true,
+  "api_config_overrides_payload": false,
+  "constraints": {
+    "_description": "時間窗、延誤、等待與途中重排排序設定。allow_late_arrival=true 時，超過時間窗不會直接無解；waiting_time_cost_per_second 會把乾等時間納入比較；route_order_* 會讓未延後站點盡量照原順序先送。",
+    "allow_late_arrival": true,
+    "late_penalty_per_second": 1000,
+    "waiting_time_cost_per_second": 1,
+    "route_order_penalty_per_second": 20,
+    "route_order_interval_seconds": 600,
+    "preserve_remaining_order": true
+  },
+  "priority": {
+    "_description": "固定客戶優先配送設定。priority 數字越小代表越優先。",
+    "default_priority": 3,
+    "priority_interval_seconds": 1800,
+    "priority_penalty_per_second": 20
+  },
+  "service": {
+    "_description": "每站平均上下貨/服務時間設定。單站資料若提供 service_time_seconds，會覆蓋此預設值。",
+    "default_service_time_seconds": 600
+  },
+  "ortools": {
+    "_description": "OR-Tools 搜尋策略設定。baseline 可用 PATH_CHEAPEST_ARC + GUIDED_LOCAL_SEARCH；測試策略可用 PARALLEL_CHEAPEST_INSERTION + GUIDED_LOCAL_SEARCH。",
+    "first_solution_strategy": "PATH_CHEAPEST_ARC",
+    "local_search_metaheuristic": "GUIDED_LOCAL_SEARCH"
+  },
+  "google_maps": {
+    "_description": "Google Maps Distance Matrix API 的呼叫設定。",
+    "mode": "driving",
+    "language": "zh-TW",
+    "chunk_size": 10,
+    "request_delay_seconds": 1
+  },
+  "navigation": {
+    "_description": "產生 Google Maps 導航網址時的設定；免費網址通常一次不要塞太多點。",
+    "max_points_per_url": 10,
+    "travelmode": "driving"
+  },
+  "api_server": {
+    "_description": "啟動 FastAPI 伺服器時可參考的設定。",
+    "host": "127.0.0.1",
+    "port": 8000,
+    "cors_allow_origins": [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+      "https://linbenshow.github.io"
+    ]
+  }
+}

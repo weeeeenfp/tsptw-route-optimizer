@@ -1,0 +1,312 @@
+{
+  "case_id": "06_large_scale_32_locations",
+  "title": "大量節點：32 個地點",
+  "purpose": "送貨不再設硬性站點上限，確認 32 個地點（公司加 31 個送貨點）仍可通過驗證並求出完整路線。",
+  "mock_matrix": {
+    "generator": "linear",
+    "travel_seconds_per_step": 60,
+    "distance_meters_per_step": 500
+  },
+  "expected": {
+    "status": "SUCCESS",
+    "route_starts_with": 0,
+    "route_ends_with": 0
+  },
+  "payload": {
+    "google_maps_api_key": "mock-key",
+    "solver": "ortools",
+    "solver_timeout_seconds": 10,
+    "depot_index": 0,
+    "locations": [
+      {
+        "id": 0,
+        "name": "國立勤益科技大學",
+        "address": "411030臺中市太平區坪林里中山路二段57號",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 1,
+        "name": "站點 01",
+        "address": "mock://large-scale/01",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "站點 02",
+        "address": "mock://large-scale/02",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "站點 03",
+        "address": "mock://large-scale/03",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "站點 04",
+        "address": "mock://large-scale/04",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "站點 05",
+        "address": "mock://large-scale/05",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "站點 06",
+        "address": "mock://large-scale/06",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "站點 07",
+        "address": "mock://large-scale/07",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "站點 08",
+        "address": "mock://large-scale/08",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 9,
+        "name": "站點 09",
+        "address": "mock://large-scale/09",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "站點 10",
+        "address": "mock://large-scale/10",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 11,
+        "name": "站點 11",
+        "address": "mock://large-scale/11",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 12,
+        "name": "站點 12",
+        "address": "mock://large-scale/12",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 13,
+        "name": "站點 13",
+        "address": "mock://large-scale/13",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 14,
+        "name": "站點 14",
+        "address": "mock://large-scale/14",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "站點 15",
+        "address": "mock://large-scale/15",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 16,
+        "name": "站點 16",
+        "address": "mock://large-scale/16",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "站點 17",
+        "address": "mock://large-scale/17",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "站點 18",
+        "address": "mock://large-scale/18",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "站點 19",
+        "address": "mock://large-scale/19",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "站點 20",
+        "address": "mock://large-scale/20",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "站點 21",
+        "address": "mock://large-scale/21",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 22,
+        "name": "站點 22",
+        "address": "mock://large-scale/22",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 23,
+        "name": "站點 23",
+        "address": "mock://large-scale/23",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 24,
+        "name": "站點 24",
+        "address": "mock://large-scale/24",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 25,
+        "name": "站點 25",
+        "address": "mock://large-scale/25",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 26,
+        "name": "站點 26",
+        "address": "mock://large-scale/26",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 27,
+        "name": "站點 27",
+        "address": "mock://large-scale/27",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 28,
+        "name": "站點 28",
+        "address": "mock://large-scale/28",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "站點 29",
+        "address": "mock://large-scale/29",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "站點 30",
+        "address": "mock://large-scale/30",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      },
+      {
+        "id": 31,
+        "name": "站點 31",
+        "address": "mock://large-scale/31",
+        "time_window": [
+          "00:00",
+          "23:59"
+        ]
+      }
+    ],
+    "end_index": 0
+  }
+}

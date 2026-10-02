@@ -1,0 +1,170 @@
+{
+  "google_maps_api_key": "",
+  "operation_type": "delivery",
+  "solver_timeout_seconds": 5,
+  "depot_index": 0,
+  "end_index": 0,
+  "locations": [
+    {
+      "id": 0,
+      "name": "國立勤益科技大學",
+      "address": "411030臺中市太平區坪林里中山路二段57號",
+      "time_window": [
+        "09:00",
+        "23:59"
+      ],
+      "priority": 3,
+      "service_time_seconds": 0
+    },
+    {
+      "id": 0,
+      "name": "國軍臺中總醫院",
+      "address": "411臺中市太平區光明里中山路二段348號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600,
+      "status": "completed"
+    },
+    {
+      "id": 1,
+      "name": "偈亭泡菜鍋 太平店",
+      "address": "411臺中市太平區宜昌里中山路三段21號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600,
+      "status": "completed"
+    },
+    {
+      "id": 2,
+      "name": "馬卡龍公園",
+      "address": "411臺中市太平區新高里環中東路四段19號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600,
+      "status": "completed"
+    },
+    {
+      "id": 3,
+      "name": "十全公園",
+      "address": "401臺中市東區東英里東英八街213號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600,
+      "status": "completed"
+    },
+    {
+      "id": 4,
+      "name": "台新醫院",
+      "address": "401臺中市東區振興路441號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600,
+      "status": "completed"
+    },
+    {
+      "id": 5,
+      "name": "六扇門時尚湯鍋-台中太平店",
+      "address": "41161臺中市太平區太平里太平路645號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600,
+      "rescheduled_time_window": [
+        "13:00",
+        "14:00"
+      ],
+      "status": "delayed"
+    },
+    {
+      "id": 6,
+      "name": "Starbucks星巴克 太平中興門市",
+      "address": "411臺中市太平區成功里中興東路136號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600
+    },
+    {
+      "id": 7,
+      "name": "棠刺身專賣",
+      "address": "411臺中市太平區坪林里中山路二段43號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600
+    },
+    {
+      "id": 8,
+      "name": "何劉 米粒食事處",
+      "address": "411臺中市太平區中山路一段269號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600
+    },
+    {
+      "id": 9,
+      "name": "童話泡芙",
+      "address": "411臺中市太平區東和里中山路一段153號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 600
+    },
+    {
+      "id": 11,
+      "name": "司機目前位置：六扇門門口",
+      "address": "41161臺中市太平區太平里太平路645號",
+      "time_window": [
+        "09:00",
+        "17:00"
+      ],
+      "priority": 3,
+      "service_time_seconds": 0,
+      "status": "in_progress"
+    }
+  ],
+  "solver": "ortools",
+  "matrix_cache_file": "matrix_cache.json",
+  "constraints": {
+    "allow_late_arrival": true,
+    "late_penalty_per_second": 1000
+  },
+  "service": {
+    "default_service_time_seconds": 600
+  },
+  "current_index": 11,
+  "current_time_seconds": "11:00",
+  "completed_indices": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

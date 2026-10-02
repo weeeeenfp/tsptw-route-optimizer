@@ -1,0 +1,22 @@
+{
+  "case_id": "08_invalid_navigation_limit",
+  "title": "Google Maps 導航點數限制：單段 11 點",
+  "purpose": "刻意讓 navigation.max_points_per_url 超過 10，確認系統會擋下，避免產生 Google Maps 無法承受的單段網址。",
+  "expected": {
+    "status": "ERROR"
+  },
+  "payload": {
+    "google_maps_api_key": "mock-key",
+    "solver": "ortools",
+    "solver_timeout_seconds": 1,
+    "depot_index": 0,
+    "navigation": {
+      "max_points_per_url": 11,
+      "travelmode": "driving"
+    },
+    "locations": [
+      { "id": 0, "name": "國立勤益科技大學", "address": "411030臺中市太平區坪林里中山路二段57號", "time_window": ["00:00", "23:59"] },
+      { "id": 1, "name": "客戶 A", "address": "mock://nav-limit/customer-a", "time_window": ["00:00", "23:59"] }
+    ]
+  }
+}
